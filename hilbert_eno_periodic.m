@@ -39,6 +39,8 @@ if not(opt.phi)
   error('Not coded yet: define the optional input phi');
 else
   % If there are values of phi that match up with theta, we'll have to be careful
+  phi_size= size(opt.phi);
+  opt.phi = opt.phi(:);
 end
 
 if mod(opt.Nq,2)==1
@@ -133,6 +135,7 @@ for q = 1:M
   end
 end
 
+
 % eno-interpolate the data to the vertices:
 f_vertices = eno(theta(1:end-1), f, vertices, opt.interval, 'k', opt.k);
 
@@ -147,9 +150,12 @@ Mr = sum(right_cell_needed);
 indices = repmat((1:opt.Nq).' + opt.Nq - 1, [1 Mr]);
 indices = ones([opt.Nq, Mr])*spdiags(bin_indices(right_cell_needed,1),0,Mr,Mr) + indices;
 x = repmat(opt.phi(right_cell_needed).', [opt.Nq 1]) - vertices(indices);
-contribution(right_cell_needed) = ...
+contribution(right_cell_needed) = contribution(right_cell_needed) + ...
    right_scale(right_cell_needed).*(w'*(f_vertices(indices).*cot(x/2))).';
+
 h = h + contribution;
 
 % Finally:
 h = h/(2*pi);
+
+h = reshape(h,phi_size);
