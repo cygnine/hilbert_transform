@@ -1,7 +1,7 @@
 function[h] = piecewise_polynomial_transform(piece_poly, x, varargin)
 % piecewise_polynomial_transform -- Hilbert transform from piecewise polynomial
 %
-% [h] = piecewise_polynomial_transform(piece_poly, x, {cells, alpha=0, beta=0})
+% [h] = piecewise_polynomial_transform(piece_poly, x, {cells, alpha=0, beta=0, Nq=2*(N+1)})
 %
 %     Computes the Hilbert transform of a piecewise polynomial function and
 %     evaluates it at the points x. No points of x may coincide with the knots
@@ -10,28 +10,29 @@ function[h] = piecewise_polynomial_transform(piece_poly, x, varargin)
 %     The input piece_poly is an N x K matrix of coefficients. piece_poly(:,k)
 %     are the N modal coefficients for the first N (local) Jacobi(alpha,beta)
 %     polynomials on cell k. The cell boundaries are given by the (K+1)-length
-%     vector cells, which is mandatory.
+%     vector cells, which is mandatory. Nq is the number of quadrature nodes
+%     used on each interval. 
 %
 %     This function assumes that interval of approximation is [0,2*pi].
 
+[N,K] = size(piece_poly);
+
 global handles;
-inputs = {'cells', 'alpha', 'beta'};
-defaults = {[], 0, 0};
+inputs = {'cells', 'alpha', 'beta', 'Nq'};
+defaults = {[], 0, 0, 2*(N+1)};
 opt = handles.common.input_schema(inputs, defaults, [], varargin{:});
 
 cot_expansion = handles.hilbert_transform.cotangent_coefficients.handle;
 opoly = handles.speclab.orthopoly1d;
 jac = handles.speclab.orthopoly1d.jacobi;
 gq = jac.quad.gauss_quadrature.handle;
-evalpoly = opoly.eval_polynomial.handle;
+evalpoly = opoly.eval_polynomial_standard.handle;
 
 if isempty(opt.cells)
   error('You must define the cells over which the piecewise polynomial is defined');
 end
 
-[N,K] = size(piece_poly);
-Nq = 2*(N+1);
-
+Nq = opt.Nq;
 x_size = size(x);
 x = x(:);
 
@@ -92,8 +93,6 @@ for q = 1:M;
   i2 = bin(q)*Nq;
   H(q,i1:i2) = 0;
 end
-
-
 
 % Evaluate the function at the nodes:
 jopt.alpha = opt.alpha;
