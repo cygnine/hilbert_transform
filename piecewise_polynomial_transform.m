@@ -17,14 +17,14 @@ function[h] = piecewise_polynomial_transform(piece_poly, x, varargin)
 
 [N,K] = size(piece_poly);
 
-global handles;
+global packages;
 inputs = {'cells', 'alpha', 'beta', 'Nq'};
 defaults = {[], 0, 0, 2*(N+1)};
-opt = handles.common.input_schema(inputs, defaults, [], varargin{:});
+opt = packages.labtools.input_schema(inputs, defaults, [], varargin{:});
 
-cot_expansion = handles.hilbert_transform.cotangent_coefficients.handle;
-opoly = handles.speclab.orthopoly1d;
-jac = handles.speclab.orthopoly1d.jacobi;
+cot_expansion = packages.hilbert_transform.cotangent_coefficients.handle;
+opoly = packages.speclab.orthopoly1d;
+jac = packages.speclab.orthopoly1d.jacobi;
 gq = jac.quad.gauss_quadrature.handle;
 evalpoly = opoly.eval_polynomial_standard.handle;
 

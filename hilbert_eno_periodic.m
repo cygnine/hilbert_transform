@@ -18,14 +18,14 @@ function[h] = hilbert_eno_periodic(theta,f,varargin)
 %     Due to the use of ENO, this method is not linear, but if you modulo out
 %     the nonlinear choice of stencil, the other operations are all linear.
 
-global handles;
+global packages;
 inputs = {'phi', 'k', 'Nq', 'interval'};
 defaults = {false, 3, 10, [0, 2*pi]};
-opt = handles.common.input_schema(inputs, defaults, [], varargin{:});
+opt = packages.labtools.input_schema(inputs, defaults, [], varargin{:});
 
-gq = handles.speclab.orthopoly1d.jacobi.quad.gauss_quadrature.handle;
-eno = handles.eno.eno_interpolant_periodic.handle;
-polys = handles.speclab.orthopoly1d.jacobi.eval.eval_jacobi_poly.handle;
+gq = packages.speclab.orthopoly1d.jacobi.quad.gauss_quadrature.handle;
+eno = packages.eno.eno_interpolant_periodic.handle;
+polys = packages.speclab.orthopoly1d.jacobi.eval.eval_jacobi_poly.handle;
 
 theta = theta(:);
 tol = 1e-12;

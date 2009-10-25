@@ -8,9 +8,9 @@ function[modes] = cotangent_coefficients(varargin)
 %     coefficients to Jacobi polynomial coefficients centered at 0, with default
 %     scaling. 
 
-global handles;
-jopt = handles.common.input_schema({'alpha', 'beta'}, {0,0}, [], varargin{:});
-jac = handles.speclab.orthopoly1d.jacobi;
+global packages;
+jopt = packages.labtools.input_schema({'alpha', 'beta'}, {0,0}, [], varargin{:});
+jac = packages.speclab.orthopoly1d.jacobi;
 
 % The first few Bernoulli numbers, which define the Taylor series coefficients
 B = zeros([19 1]);
